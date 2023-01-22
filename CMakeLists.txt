@@ -1,33 +1,61 @@
 cmake_minimum_required(VERSION 3.11)
 
 project(
-  CppTemplate
-  VERSION 0.1
-  DESCRIPTION "Example Project for Cpp Compile Structure"
+  LemonAde
+  VERSION 0.1.0
+  DESCRIPTION "Simple Audio Processing in C++ with JUCE"
   LANGUAGES CXX
 )
 
-set(TARGET_NAME program)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(TARGET_NAME lemonade)
 set(PROJ_SOURCE_DIR src)
+
 set(PROJ_SOURCES
     ${PROJ_SOURCE_DIR}/main.cpp
     ${PROJ_SOURCE_DIR}/bar.cpp
 )
+
 set(PROJ_LIBRARIES_DIR
     libs
 )
 
 set(PROJ_LIBRARIES
-    foo
+    JUCE
 )
+
+set(JUCE_MODULES 
+    juce_core
+    juce_dsp
+    juce_audio_basics
+    juce_audio_formats
+    juce_audio_processors
+    juce_data_structures
+    juce_events
+)
+
+add_definitions(
+    -DJUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1
+    -DDEBUG=1
+    -D_DEBUGE=1
+    -DMACOS=1
+)
+
+foreach(MODULE ${JUCE_MODULES})
+    add_definitions(-DJUCE_MODULE_AVAILABLE_${MODULE}=1)
+endforeach(MODULE)
 
 ###########
 # Project #
 ###########
 add_executable(${TARGET_NAME} ${PROJ_SOURCES})
-target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/libs/JUCE/modules)
 
 foreach(LIBRARY ${PROJ_LIBRARIES})
     add_subdirectory("${PROJ_LIBRARIES_DIR}/${LIBRARY}")
 endforeach(LIBRARY)
-target_link_libraries(${TARGET_NAME} ${PROJ_LIBRARIES})
+
+# Link JUCE Modules
+target_link_libraries(${TARGET_NAME} ${JUCE_MODULES})
