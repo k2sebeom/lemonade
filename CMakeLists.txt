@@ -14,8 +14,7 @@ set(TARGET_NAME lemonade)
 set(PROJ_SOURCE_DIR src)
 
 set(PROJ_SOURCES
-    ${PROJ_SOURCE_DIR}/main.cpp
-    ${PROJ_SOURCE_DIR}/bar.cpp
+    ${PROJ_SOURCE_DIR}/lemonade.cc
 )
 
 set(PROJ_LIBRARIES_DIR
@@ -50,7 +49,7 @@ endforeach(MODULE)
 ###########
 # Project #
 ###########
-add_executable(${TARGET_NAME} ${PROJ_SOURCES})
+add_library(${TARGET_NAME} ${PROJ_SOURCES})
 target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/libs/JUCE/modules)
 
 foreach(LIBRARY ${PROJ_LIBRARIES})
@@ -59,3 +58,15 @@ endforeach(LIBRARY)
 
 # Link JUCE Modules
 target_link_libraries(${TARGET_NAME} ${JUCE_MODULES})
+
+
+############
+# Examples #
+############
+set(PROJ_EXAMPLE_DIR examples)
+set(PROJ_EXAMPLE_LIST
+    reverb
+)
+foreach(EXAMPLE ${PROJ_EXAMPLE_LIST})
+    add_subdirectory("${PROJ_EXAMPLE_DIR}/${EXAMPLE}")
+endforeach(EXAMPLE)
