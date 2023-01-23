@@ -20,6 +20,8 @@ public:
 
     virtual void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {};
 
+    virtual void setEnabled(bool value) {};
+
     std::vector<std::string> parameters;
 
     virtual PluginParam getParam(std::string paramName) { return PluginParam(); };

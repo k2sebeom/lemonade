@@ -19,6 +19,7 @@ int main(int argc, const char** argv) {
 
     reverb.setParam("wetLevel", 0.7);
     reverb.setParam("roomSize", 0.7);
+    reverb.setEnabled(true);
 
     for(int i = 0; i < reverb.parameters.size(); i++) {
         std::string paramName = reverb.parameters.at(i);

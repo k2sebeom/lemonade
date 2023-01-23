@@ -46,6 +46,10 @@ public:
 
         delete[] result;
     };
+
+    void setEnabled(bool value) {
+        processor.setEnabled(value);
+    };
     
 protected:
     ProcessorType processor;
