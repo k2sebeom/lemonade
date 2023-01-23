@@ -23,7 +23,6 @@ public:
             return;
         }
 
-        std::cout << sampleRate << " " << nChannels << " " << nFrames << " " << data[0] << std::endl;
         juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
         
         auto block = juce::dsp::AudioBlock<float>(buffer);
@@ -36,8 +35,6 @@ public:
         for(int i = 0; i < nChannels * nFrames; i++) {
             data[i] = result[i];
         }
-
-        std::cout << data[0] << std::endl;
 
         delete[] result;
     };
