@@ -9,26 +9,23 @@ template <typename ProcessorType> class JucePlugin: public Plugin {
 public:
     virtual ~JucePlugin(){};
 
-    void process(float *data) {
-        float floatData[16];
-        for(int i = 0; i < 16; i++) {
-            floatData[i] = sin(i);
-        }
-
-        for(int i = 0; i < 16; i++) {
-            std::cout << floatData[i] << std::endl;
-        }
-
-        juce::AudioBuffer buffer = arrayToJuceBuffer<float>(floatData, 2, 8);
-        std::cout << buffer.getNumSamples() << std::endl;
-        std::cout << "Processing with Juce" << std::endl;
-
+    void prepare(double sampleRate, unsigned int nChannels, unsigned int nFrames) {
         juce::dsp::ProcessSpec spec;
-        spec.sampleRate = 44100;
-        spec.maximumBlockSize = static_cast<juce::uint32>(buffer.getNumSamples());
-        spec.numChannels = static_cast<juce::uint32>(buffer.getNumChannels());
+        spec.sampleRate = sampleRate;
+        spec.maximumBlockSize = static_cast<juce::uint32>(nFrames);
+        spec.numChannels = static_cast<juce::uint32>(nChannels);
 
         processor.prepare(spec);
+    }
+
+    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
+        if(nFrames == 0) {
+            return;
+        }
+
+        std::cout << sampleRate << " " << nChannels << " " << nFrames << " " << data[0] << std::endl;
+        juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
+        
         auto block = juce::dsp::AudioBlock<float>(buffer);
         auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
@@ -36,14 +33,16 @@ public:
 
         float *result = juceBufferToArray<float>(buffer);
 
-        for(int i = 0; i < 16; i++) {
-            std::cout << result[i] << std::endl;
+        for(int i = 0; i < nChannels * nFrames; i++) {
+            data[i] = result[i];
         }
+
+        std::cout << data[0] << std::endl;
 
         delete[] result;
     };
     
-private:
+protected:
     ProcessorType processor;
 };
 }

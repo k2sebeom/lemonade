@@ -10,8 +10,6 @@ public:
 
     virtual ~Plugin() {};
 
-    // virtual void prepare();
-
-    virtual void process(float *data) {};
+    virtual void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {};
 };
 }
