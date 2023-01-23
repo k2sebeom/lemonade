@@ -25,6 +25,10 @@ public:
             return;
         }
 
+        if(lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
+            prepare(sampleRate, nChannels, nFrames);
+        }
+
         juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
         
         auto block = juce::dsp::AudioBlock<float>(buffer);
@@ -43,5 +47,8 @@ public:
     
 protected:
     ProcessorType processor;
+
+private:
+    juce::dsp::ProcessSpec lastSpec;
 };
 }
