@@ -18,6 +18,7 @@ public:
         spec.numChannels = static_cast<juce::uint32>(nChannels);
 
         processor.prepare(spec);
+        lastSpec = spec;
         isPrepared = true;
     }
 
