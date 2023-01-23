@@ -12,9 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TARGET_NAME lemonade)
 set(PROJ_SOURCE_DIR src)
+set(PROJ_INCLUDE_DIR include)
 
 set(PROJ_SOURCES
     ${PROJ_SOURCE_DIR}/lemonade.cc
+    ${PROJ_INCLUDE_DIR}/plugins/Reverb.h
 )
 
 set(PROJ_LIBRARIES_DIR

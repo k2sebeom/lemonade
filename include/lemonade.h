@@ -3,6 +3,7 @@
 #define LEMONADE_H
 
 #include "JuceHeader.h"
+#include "Plugin.h"
 #include <iostream>
 
 namespace Ade {
