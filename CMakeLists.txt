@@ -18,6 +18,7 @@ set(PROJ_SOURCES
     ${PROJ_SOURCE_DIR}/lemonade.cc
     ${PROJ_INCLUDE_DIR}/lemonade.h
     ${PROJ_INCLUDE_DIR}/ade_plugins/Reverb.h
+    ${PROJ_INCLUDE_DIR}/ade_plugins/Chorus.h
 )
 
 set(PROJ_LIBRARIES_DIR
