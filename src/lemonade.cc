@@ -17,6 +17,10 @@ Ade::Plugin* Ade::Chain::at(int i) {
     return nullptr;
 }
 
+int Ade::Chain::size() {
+    return plugins.size();
+}
+
 void Ade::Chain::process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
     for(int i = 0; i < plugins.size(); i++) {
         plugins.at(i)->process(data, sampleRate, nChannels, nFrames);

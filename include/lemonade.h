@@ -17,6 +17,8 @@ public:
     void removeAt(int i);
     void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames);
 
+    int size();
+
     Ade::Plugin *at(int i);
 
 private:
