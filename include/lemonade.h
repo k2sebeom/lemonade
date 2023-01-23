@@ -4,13 +4,23 @@
 
 #include "JuceHeader.h"
 #include "Plugin.h"
-#include <iostream>
+#include <vector>
 
 namespace Ade {
 
 class Chain {
 public:
-    void Hello();
+    Chain();
+    ~Chain();
+
+    void push(Ade::Plugin *plugin);
+    void removeAt(int i);
+    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames);
+
+    Ade::Plugin *at(int i);
+
+private:
+    std::vector<Ade::Plugin*> plugins;
 };
 
 }
