@@ -7,6 +7,6 @@ int main(int argc, const char** argv) {
     Ade::Chain c;
     c.Hello();
     Ade::Reverb reverb;
-    std::cout << reverb.processor.getParameters().freezeMode << std::endl;
+    std::cout << reverb.name << std::endl;
     return 0;
 }

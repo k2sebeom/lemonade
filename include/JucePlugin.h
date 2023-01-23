@@ -7,6 +7,8 @@ namespace Ade {
 template <typename ProcessorType> class JucePlugin: public Plugin {
 public:
     virtual ~JucePlugin(){};
+    
+private:
     ProcessorType processor;
 };
 }
