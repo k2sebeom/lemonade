@@ -16,7 +16,8 @@ set(PROJ_INCLUDE_DIR include)
 
 set(PROJ_SOURCES
     ${PROJ_SOURCE_DIR}/lemonade.cc
-    ${PROJ_INCLUDE_DIR}/plugins/Reverb.h
+    ${PROJ_INCLUDE_DIR}/lemonade.h
+    ${PROJ_INCLUDE_DIR}/ade_plugins/Reverb.h
 )
 
 set(PROJ_LIBRARIES_DIR
@@ -52,7 +53,7 @@ endforeach(MODULE)
 # Project #
 ###########
 add_library(${TARGET_NAME} ${PROJ_SOURCES})
-target_include_directories(${TARGET_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/libs/JUCE/modules)
+target_include_directories(${TARGET_NAME} PUBLI ${PROJ_INCLUDE_DIR} ${CMAKE_SOURCE_DIR}/libs/JUCE/modules)
 
 foreach(LIBRARY ${PROJ_LIBRARIES})
     add_subdirectory("${PROJ_LIBRARIES_DIR}/${LIBRARY}")

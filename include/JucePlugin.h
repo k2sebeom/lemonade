@@ -1,3 +1,5 @@
+#pragma once
+
 #include "JuceHeader.h"
 #include "Plugin.h"
 #include "JuceUtils.h"
