@@ -18,6 +18,7 @@ public:
         spec.numChannels = static_cast<juce::uint32>(nChannels);
 
         processor.prepare(spec);
+        isPrepared = true;
     }
 
     void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
@@ -25,7 +26,7 @@ public:
             return;
         }
 
-        if(lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
+        if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
             prepare(sampleRate, nChannels, nFrames);
         }
 
@@ -50,5 +51,6 @@ protected:
 
 private:
     juce::dsp::ProcessSpec lastSpec;
+    bool isPrepared = false;
 };
 }
