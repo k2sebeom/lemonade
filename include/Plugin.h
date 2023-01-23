@@ -12,6 +12,6 @@ public:
 
     // virtual void prepare();
 
-    // virtual void process(float *data);
+    virtual void process(float *data) {};
 };
 }

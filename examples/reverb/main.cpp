@@ -8,5 +8,6 @@ int main(int argc, const char** argv) {
     c.Hello();
     Ade::Reverb reverb;
     std::cout << reverb.name << std::endl;
+    reverb.process(nullptr);
     return 0;
 }
