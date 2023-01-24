@@ -27,6 +27,10 @@ public:
             return;
         }
 
+        if(!isEnabled) {
+            return;
+        }
+
         if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
             prepare(sampleRate, nChannels, nFrames);
         }
@@ -48,7 +52,7 @@ public:
     };
 
     void setEnabled(bool value) override {
-        processor.setEnabled(value);
+        isEnabled = value;
     };
     
 protected:
@@ -57,5 +61,6 @@ protected:
 private:
     juce::dsp::ProcessSpec lastSpec;
     bool isPrepared = false;
+    bool isEnabled = true;
 };
 }
