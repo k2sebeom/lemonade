@@ -3,7 +3,7 @@
 #include "JuceHeader.h"
 #include "Plugin.h"
 #include "JuceUtils.h"
-#include <thread>
+#include <vector>
 
 
 namespace Ade {
@@ -72,6 +72,7 @@ public:
         juce::String msg("Fuck");
         pluginInstance = pluginFormatManager.createPluginInstance(foundPluginDescription, 44100, 1024, msg);
 
+        name = pluginInstance->getName().toStdString();
         pluginInstance->enableAllBuses();
         pluginInstance->reset();
     }
@@ -103,33 +104,51 @@ public:
             return;
         }
 
+        // If spec is different, prepare the plugin
+        if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
+            prepare(sampleRate, nChannels, nFrames);
+        }
 
+        juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
+        auto block = juce::dsp::AudioBlock<float>(buffer);
+        auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
-        // if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
-        //     prepare(sampleRate, nChannels, nFrames);
-        // }
+        std::vector<float *> channelPointers(pluginInstance->getTotalNumInputChannels());
 
-        // juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
-        
-        // auto block = juce::dsp::AudioBlock<float>(buffer);
-        // auto context = juce::dsp::ProcessContextReplacing<float>(block);
+        for (size_t i = 0; i < block.getNumChannels(); i++) {
+            channelPointers[i] = block.getChannelPointer(i);
+        }
 
-        // processor.process(context);
+        // Initialize possible dummy input channels
+        std::vector<std::vector<float>> dummyChannels;
+        for (size_t i = block.getNumChannels(); i < channelPointers.size(); i++) {
+            std::vector<float> dummyChannel(block.getNumSamples());
+            channelPointers[i] = dummyChannel.data();
+            dummyChannels.push_back(dummyChannel);
+        }
 
-        // float *result = juceBufferToArray<float>(buffer);
+        juce::AudioBuffer<float> audioBuffer(channelPointers.data(),
+                                    channelPointers.size(),
+                                    block.getNumSamples());
+        juce::MidiBuffer emptyMidiBuffer;
+        pluginInstance->processBlock(audioBuffer, emptyMidiBuffer);
 
-        // for(int i = 0; i < nChannels * nFrames; i++) {
-        //     data[i] = result[i];
-        // }
+        // Replace target by the result
+        float *result = juceBufferToArray<float>(audioBuffer);
 
-        // delete[] result;
+        for(int i = 0; i < nChannels * nFrames; i++) {
+            data[i] = result[i];
+        }
+
+        delete[] result;
     };
 
     void showEditor() {
         PluginWindow::openAndWait(*pluginInstance);
     }
 
-    void setEnabled(bool value) {
+    void setEnabled(bool value) override {
+        // pluginInstance->setEnabled
         // processor.setEnabled(value);
     };
 
