@@ -83,20 +83,27 @@ public:
     };
 
     void prepare(double sampleRate, unsigned int nChannels, unsigned int nFrames) {
-        // juce::dsp::ProcessSpec spec;
-        // spec.sampleRate = sampleRate;
-        // spec.maximumBlockSize = static_cast<juce::uint32>(nFrames);
-        // spec.numChannels = static_cast<juce::uint32>(nChannels);
+        juce::dsp::ProcessSpec spec;
+        spec.sampleRate = sampleRate;
+        spec.maximumBlockSize = static_cast<juce::uint32>(nFrames);
+        spec.numChannels = static_cast<juce::uint32>(nChannels);
 
-        // processor.prepare(spec);
-        // lastSpec = spec;
-        // isPrepared = true;
+        pluginInstance->releaseResources();
+        setNumChannels(nChannels);
+
+        pluginInstance->setNonRealtime(true);
+        pluginInstance->prepareToPlay(spec.sampleRate, spec.maximumBlockSize);
+
+        lastSpec = spec;
+        isPrepared = true;
     }
 
-    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
-        // if(nFrames == 0) {
-        //     return;
-        // }
+    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) override {
+        if(nFrames == 0) {
+            return;
+        }
+
+
 
         // if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
         //     prepare(sampleRate, nChannels, nFrames);
@@ -125,11 +132,53 @@ public:
     void setEnabled(bool value) {
         // processor.setEnabled(value);
     };
-    
-protected:
-
 
 private:
+    void setNumChannels(int numChannels) {
+        if (numChannels == 0)
+            return;
+        auto mainInputBus = pluginInstance->getBus(true, 0);
+        auto mainOutputBus = pluginInstance->getBus(false, 0);
+
+        // Try to disable all non-main input buses if possible:
+        for (int i = 1; i < pluginInstance->getBusCount(true); i++) {
+            auto *bus = pluginInstance->getBus(true, i);
+            if (bus->isNumberOfChannelsSupported(0))
+                bus->enable(false);
+        }
+
+        // ...and all non-main output buses too:
+        for (int i = 1; i < pluginInstance->getBusCount(false); i++) {
+            auto *bus = pluginInstance->getBus(false, i);
+            if (bus->isNumberOfChannelsSupported(0))
+                bus->enable(false);
+        }
+
+        if (mainInputBus->getNumberOfChannels() == numChannels &&
+            mainOutputBus->getNumberOfChannels() == numChannels) {
+            return;
+        }
+
+        // Cache these values in case the plugin fails to update:
+        auto previousInputChannelCount = mainInputBus->getNumberOfChannels();
+        auto previousOutputChannelCount = mainOutputBus->getNumberOfChannels();
+
+        // Try to change the input and output bus channel counts...
+        mainInputBus->setNumberOfChannels(numChannels);
+        mainOutputBus->setNumberOfChannels(numChannels);
+
+        // If, post-reload, we still can't use the right number of channels, let's
+        // conclude the plugin doesn't allow this channel count.
+        if (mainInputBus->getNumberOfChannels() != numChannels ||
+            mainOutputBus->getNumberOfChannels() != numChannels) {
+            // Reset the bus configuration to what it was before, so we don't
+            // leave one of the buses smaller than the other:
+            mainInputBus->setNumberOfChannels(previousInputChannelCount);
+            mainOutputBus->setNumberOfChannels(previousOutputChannelCount);
+        }
+    }
+
+
     juce::dsp::ProcessSpec lastSpec;
     bool isPrepared = false;
 

@@ -11,7 +11,7 @@ template <typename ProcessorType> class JucePlugin: public Plugin {
 public:
     virtual ~JucePlugin(){};
 
-    void prepare(double sampleRate, unsigned int nChannels, unsigned int nFrames) {
+    void prepare(double sampleRate, unsigned int nChannels, unsigned int nFrames) override {
         juce::dsp::ProcessSpec spec;
         spec.sampleRate = sampleRate;
         spec.maximumBlockSize = static_cast<juce::uint32>(nFrames);
@@ -22,7 +22,7 @@ public:
         isPrepared = true;
     }
 
-    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
+    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) override {
         if(nFrames == 0) {
             return;
         }
