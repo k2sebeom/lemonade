@@ -19,6 +19,11 @@ int main(int argc, const char** argv) {
     std::string outPath = argv[2];
     SndfileHandle reader(filePath);
 
+    auto infos = Ade::ExternalPlugin::getInstalledPlugins();
+    for(int i = 0; i < infos.size(); i++) {
+        std::cout << infos.at(i).name << std::endl;
+    }
+
     Ade::Chain chain;
     Ade::ExternalPlugin plugin(pathToPluginFile);
     std::cout << plugin.name << std::endl;

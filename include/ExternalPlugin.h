@@ -4,9 +4,15 @@
 #include "Plugin.h"
 #include "JuceUtils.h"
 #include <vector>
+#include <string>
 
 
 namespace Ade {
+
+typedef struct ExternalPluginInfo {
+    std::string name;
+    std::string path;
+} ExternalPluginInfo;
 
 class PluginWindow: public juce::DocumentWindow {
 public:
@@ -46,6 +52,7 @@ public:
         toFront(true);
         juce::Process::makeForegroundProcess();
     }
+
 private:
     juce::AudioProcessor &processor;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginWindow);
@@ -53,6 +60,35 @@ private:
 
 class ExternalPlugin: public Plugin {
 public:
+    static std::vector<ExternalPluginInfo> getInstalledPlugins() {
+        juce::MessageManager::getInstance();
+        juce::VST3PluginFormat format;
+
+        std::vector<ExternalPluginInfo> info;
+        for (juce::String pluginIdentifier : format.searchPathsForPlugins(format.getDefaultLocationsToSearch(), true, false)) {
+            ExternalPluginInfo p;
+            juce::String pluginPath = format.getNameOfPluginFromIdentifier(pluginIdentifier);
+            p.path = pluginPath.toStdString();
+            p.name = ExternalPlugin::getPluginNamesForFile(pluginPath.toStdString()).at(0);
+            info.push_back(p);
+        }
+        return info;
+    }
+
+    static std::vector<std::string> getPluginNamesForFile(std::string filename) {
+        juce::MessageManager::getInstance();
+        juce::VST3PluginFormat format;
+        juce::OwnedArray<juce::PluginDescription> typesFound;
+
+        format.findAllTypesForFile(typesFound, filename);
+
+        std::vector<std::string> pluginNames;
+        for (int i = 0; i < typesFound.size(); i++) {
+            pluginNames.push_back(typesFound[i]->name.toStdString());
+        }
+        return pluginNames;
+    }
+
     ExternalPlugin(std::string pathToPlugin): pathToPluginFile(pathToPlugin) {
         juce::MessageManager::getInstance();
         pluginFormatManager.addDefaultFormats();
