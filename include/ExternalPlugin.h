@@ -62,25 +62,29 @@ class ExternalPlugin: public Plugin {
 public:
     static std::vector<ExternalPluginInfo> getInstalledPlugins() {
         juce::MessageManager::getInstance();
-        juce::VST3PluginFormat format;
 
+        juce::AudioPluginFormatManager pluginFormatManager;
+        pluginFormatManager.addDefaultFormats();
         std::vector<ExternalPluginInfo> info;
-        for (juce::String pluginIdentifier : format.searchPathsForPlugins(format.getDefaultLocationsToSearch(), true, false)) {
-            ExternalPluginInfo p;
-            juce::String pluginPath = format.getNameOfPluginFromIdentifier(pluginIdentifier);
-            p.path = pluginPath.toStdString();
-            p.name = ExternalPlugin::getPluginNamesForFile(pluginPath.toStdString()).at(0);
-            info.push_back(p);
+        for (int i = 0; i < pluginFormatManager.getNumFormats(); ++i)
+        {
+            juce::AudioPluginFormat *format = pluginFormatManager.getFormat(i);
+            for (juce::String pluginIdentifier : format->searchPathsForPlugins(format->getDefaultLocationsToSearch(), true, false)) {
+                ExternalPluginInfo p;
+                juce::String pluginPath = format->getNameOfPluginFromIdentifier(pluginIdentifier);
+                p.path = pluginPath.toStdString();
+                p.name = ExternalPlugin::getPluginNamesForFileOfFormat(pluginPath.toStdString(), format).at(0);
+                info.push_back(p);
+            }
         }
         return info;
     }
 
-    static std::vector<std::string> getPluginNamesForFile(std::string filename) {
+    static std::vector<std::string> getPluginNamesForFileOfFormat(std::string filename, juce::AudioPluginFormat *format) {
         juce::MessageManager::getInstance();
-        juce::VST3PluginFormat format;
         juce::OwnedArray<juce::PluginDescription> typesFound;
-
-        format.findAllTypesForFile(typesFound, filename);
+ 
+        format->findAllTypesForFile(typesFound, filename);
 
         std::vector<std::string> pluginNames;
         for (int i = 0; i < typesFound.size(); i++) {
