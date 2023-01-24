@@ -22,7 +22,7 @@ public:
         isPrepared = true;
     }
 
-    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) {
+    void process(float *data, double sampleRate, unsigned int nChannels, unsigned int nFrames) override {
         if(nFrames == 0) {
             return;
         }
@@ -47,7 +47,7 @@ public:
         delete[] result;
     };
 
-    void setEnabled(bool value) {
+    void setEnabled(bool value) override {
         processor.setEnabled(value);
     };
     
