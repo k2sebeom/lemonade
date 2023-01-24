@@ -155,7 +155,6 @@ public:
 
         juce::AudioBuffer buffer = arrayToJuceBuffer<float>(data, nChannels, nFrames);
         auto block = juce::dsp::AudioBlock<float>(buffer);
-        auto context = juce::dsp::ProcessContextReplacing<float>(block);
 
         std::vector<float *> channelPointers(pluginInstance->getTotalNumInputChannels());
 

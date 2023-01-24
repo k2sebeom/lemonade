@@ -72,6 +72,8 @@ endforeach(LIBRARY)
 ###########
 add_library(${TARGET_NAME} STATIC ${PROJ_SOURCES})
 
+target_compile_options(${TARGET_NAME} PRIVATE -Wall -Werror)
+
 target_include_directories(${TARGET_NAME} PUBLIC
     ${PROJ_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/libs/JUCE/modules/
