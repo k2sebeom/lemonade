@@ -104,6 +104,10 @@ public:
             return;
         }
 
+        if(!isEnabled) {
+            return;
+        }
+
         // If spec is different, prepare the plugin
         if(!isPrepared || lastSpec.numChannels != nChannels || lastSpec.sampleRate != sampleRate || lastSpec.maximumBlockSize < nFrames) {
             prepare(sampleRate, nChannels, nFrames);
@@ -148,8 +152,7 @@ public:
     }
 
     void setEnabled(bool value) override {
-        // pluginInstance->setEnabled
-        // processor.setEnabled(value);
+        isEnabled = value;
     };
 
 private:
@@ -201,12 +204,12 @@ private:
     juce::dsp::ProcessSpec lastSpec;
     bool isPrepared = false;
 
+    bool isEnabled = true;
+
     juce::String pathToPluginFile;
     juce::PluginDescription foundPluginDescription;
     juce::AudioPluginFormatManager pluginFormatManager;
     juce::KnownPluginList pluginList;
     std::unique_ptr<juce::AudioPluginInstance> pluginInstance;
-
-    // std::unique_ptr<PluginWindow> editorWindow;
 };
 }
