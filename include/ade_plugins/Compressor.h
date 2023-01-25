@@ -74,6 +74,7 @@ public:
         if(paramName == "release") {
             processor.setRelease(value);
         }
+        compressorParams[paramName] = value;
     }
 
 private:

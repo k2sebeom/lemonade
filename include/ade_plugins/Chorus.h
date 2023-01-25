@@ -85,6 +85,7 @@ public:
         if(paramName == "mix") {
             processor.setMix(value);
         }
+        chorusParams[paramName] = value;
     }
 
 private:

@@ -52,6 +52,7 @@ public:
         if(paramName == "release") {
             processor.setRelease(value);
         }
+        limiterParams[paramName] = value;
     }
 
 private:
