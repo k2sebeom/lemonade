@@ -16,7 +16,7 @@ typedef struct ExternalPluginInfo {
 
 class PluginWindow: public juce::DocumentWindow {
 public:
-    PluginWindow(juce::AudioProcessor &processor) : juce::DocumentWindow("Lemonade", juce::LookAndFeel::getDefaultLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), juce::DocumentWindow::minimiseButton | juce::DocumentWindow::closeButton),
+    PluginWindow(juce::AudioProcessor &processor) : juce::DocumentWindow(processor.getName(), juce::LookAndFeel::getDefaultLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), juce::DocumentWindow::minimiseButton | juce::DocumentWindow::closeButton),
         processor(processor)
     {
         setUsingNativeTitleBar(true);
