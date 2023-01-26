@@ -16,8 +16,7 @@ typedef struct ExternalPluginInfo {
 
 class PluginWindow: public juce::DocumentWindow {
 public:
-    PluginWindow(juce::AudioProcessor &processor) : juce::DocumentWindow(processor.getName(), juce::LookAndFeel::getDefaultLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), juce::DocumentWindow::minimiseButton | juce::DocumentWindow::closeButton),
-        processor(processor)
+    PluginWindow(juce::AudioProcessor &processor) : juce::DocumentWindow(processor.getName(), juce::LookAndFeel::getDefaultLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId), juce::DocumentWindow::minimiseButton | juce::DocumentWindow::closeButton)
     {
         setUsingNativeTitleBar(true);
 
@@ -54,7 +53,6 @@ public:
     }
 
 private:
-    juce::AudioProcessor &processor;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginWindow);
 };
 
